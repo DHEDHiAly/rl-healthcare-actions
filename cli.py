@@ -29,15 +29,18 @@ def main():
     p_pipeline = sub.add_parser("pipeline", help="Run full pipeline: cohort → labs → actions → trajectory")
     p_pipeline.add_argument("--skip-cohort", action="store_true")
     p_pipeline.add_argument("--skip-actions", action="store_true")
+    p_pipeline.add_argument("--data", default=None, help="Input CSV/parquet (skips MIMIC extraction)")
 
     p_features = sub.add_parser("features", help="Feature engineering and splits")
     p_features.add_argument("--seed", type=int, default=42)
+    p_features.add_argument("--data", default=None, help="Input CSV/parquet (default: data/trajectories_v1.parquet)")
 
     p_train = sub.add_parser("train", help="Train IQL + BC models")
     p_train.add_argument("--epochs", type=int, default=50)
     p_train.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2, 3, 42])
     p_train.add_argument("--batch-size", type=int, default=2048)
     p_train.add_argument("--iql-only", action="store_true")
+    p_train.add_argument("--data", default=None, help="Data CSV/parquet (runs feature pipeline first if needed)")
     p_train.add_argument("--arch", choices=list(ARCHITECTURES.keys()), default="mlp",
                         help="Network architecture: mlp (256x2), deep (512x3), wide (512x2), lstm")
     p_train.add_argument("--hidden-sizes", type=int, nargs="+", default=None,
@@ -88,6 +91,9 @@ def main():
         cohort.write_parquet(out / "cohort.parquet")
         cohort.write_csv(out / "cohort.csv")
         print(f"Cohort: {cohort.height} admissions, mortality={cohort['hospital_expire_flag'].sum()}")
+
+    if hasattr(args, 'data') and args.data:
+        os.environ["RL_DATA_PATH"] = args.data
     elif args.command == "labs":
         from src.extract.labs import extract_labs, extract_vitals_from_chartevents, pivot_and_bin
         from pathlib import Path
@@ -119,7 +125,8 @@ def main():
         pipeline_main()
     elif args.command == "features":
         from src.pipeline.features import build_dataset
-        result = build_dataset(seed=args.seed)
+        traj_path = getattr(args, 'data', None) or os.environ.get("RL_DATA_PATH", "data/trajectories_v1.parquet")
+        result = build_dataset(traj_path=traj_path, seed=args.seed)
         for k, v in result.items():
             if k != "zstats":
                 print(f"  {k}: {v}")
@@ -128,6 +135,10 @@ def main():
         import torch
         from src.config import N_ACTIONS
         data_dir = os.environ.get("RL_DATA_DIR", "data")
+        if hasattr(args, 'data') and args.data:
+            os.environ["RL_DATA_PATH"] = args.data
+            from src.pipeline.features import build_dataset
+            build_dataset(traj_path=args.data, seed=42)
         out = Path(f"{data_dir}/models")
         out.mkdir(parents=True, exist_ok=True)
         device = args.device or auto_device()

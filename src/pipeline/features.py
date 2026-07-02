@@ -160,8 +160,12 @@ def build_dataset(
 ) -> Dict:
     from src.pipeline.trajectory import load_cohort
 
-    traj = pl.read_parquet(traj_path)
-    cohort = load_cohort(cohort_path)
+    p = Path(traj_path)
+    if p.suffix == ".csv":
+        traj = pl.read_csv(str(p), try_parse_dates=True)
+    else:
+        traj = pl.read_parquet(traj_path)
+    cohort = load_cohort(cohort_path) if Path(cohort_path).exists() else pl.DataFrame()
 
     # Determine feature columns from data
     global ALL_FEAT_COLS, MISSING_COLS
