@@ -1,4 +1,4 @@
-# Dr. House: Universal RL for Healthcare Actions
+# RL Healthcare Actions
 
 Train AI models on YOUR clinical data to predict the best next intervention for any patient, any condition, any EHR. No configuration needed — bring your data and go.
 
@@ -54,7 +54,7 @@ No config? The system runs in auto-detect mode with survival-based reward.
 
 ## Works for every condition
 
-Yes. Dr. House contains **zero condition-specific logic**. No hardcoded thresholds for anemia vs heart failure vs sepsis. The reward function is universal (survival + discharge), feature engineering is purely numeric (z-scores, trends, missing masks), and safety is either behavior-policy-based or empty.
+Yes. The system contains **zero condition-specific logic**. No hardcoded thresholds for anemia vs heart failure vs sepsis. The reward function is universal (survival + discharge), feature engineering is purely numeric (z-scores, trends, missing masks), and safety is either behavior-policy-based or empty.
 
 Evaluated across **50 phenotype groups** in MIMIC-IV — **0 failing**:
 
@@ -78,7 +78,7 @@ This is what you'd expect from a well-specified reward function: when the reward
 
 ## Results (MIMIC-IV, 1.3M clinical decisions)
 
-| Metric | Dr. House (IQL) | Behavior Cloning | Observed Practice |
+| Metric | RL Healthcare Actions (IQL) | Behavior Cloning | Observed Practice |
 |--------|:---:|:---:|:---:|
 | WIS (WIS OPE) | **−1.84** | −201.81 | — |
 | Policy Value | **−0.44** | −93.45 | −127.54 |
@@ -86,7 +86,7 @@ This is what you'd expect from a well-specified reward function: when the reward
 | Safety violations | **0** | — | — |
 | Bootstrap CIs overlapping? | **No** | — | — |
 
-All 4 OPE estimators (WIS, FQE, DM, Policy Value) agree: Dr. House's policy is significantly better than both behavior cloning and observed clinician practice.
+All 4 OPE estimators (WIS, FQE, DM, Policy Value) agree: the IQL policy is significantly better than both behavior cloning and observed clinician practice.
 
 ## Architecture comparison
 
@@ -101,7 +101,7 @@ The default MLP (2×256) performs best on clinical data — extra capacity doesn
 
 ## Safety
 
-Dr. House never violates clinical constraints. Safety rules are:
+The model never violates clinical constraints. Safety rules are:
 - **Hard-coded** via config (`safety_constraints` in $RL_CONFIG)
 - **Learned** from behavior policy (mask actions clinicians never do in similar states)
 - **Optional** — disable with empty config, rely on behavior policy alone
