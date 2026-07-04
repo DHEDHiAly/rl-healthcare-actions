@@ -7,7 +7,7 @@ BIN_HOURS = 4
 MIN_BINS = 6
 LOCF_MAX_GAP_HOURS = 24
 
-MIMIC_DATA_DIR = os.environ.get("MIMIC_DATA_DIR", "/Users/farasatdhedhi/mimic_pipeline/data")
+MIMIC_DATA_DIR = os.environ.get("MIMIC_DATA_DIR", "/Users/farasatdhedhi/mimic_pipeline/mimiciv_3.1")
 
 # Columns to exclude when auto-detecting features from data
 AUTO_META_COLS = {

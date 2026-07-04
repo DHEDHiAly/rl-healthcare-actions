@@ -73,7 +73,7 @@ def extract_labs(
         subject_filter = set(subj_windows.keys())
 
     # Phase 1: extract labs WITH hadm_id using lazy scan (fast, column-pruned)
-    scan = pl.scan_csv(f"{MIMIC_DATA_DIR}/labevents.csv.gz", try_parse_dates=True)
+    scan = pl.scan_csv(f"{MIMIC_DATA_DIR}/hosp/labevents.csv.gz", try_parse_dates=True)
     scan_with = scan.filter(
         pl.col("itemid").is_in(list(itemids))
         & pl.col("valuenum").is_not_null()
@@ -102,7 +102,7 @@ def extract_labs(
 
         print("  Scanning labevents for null-hadm rows (hospital floor patients)...")
         rows_out = []
-        lab_path = f"{MIMIC_DATA_DIR}/labevents.csv.gz"
+        lab_path = f"{MIMIC_DATA_DIR}/hosp/labevents.csv.gz"
         with gzip.open(lab_path, "rt") as f:
             reader = csv.reader(f)
             header = next(reader)
@@ -206,7 +206,7 @@ def extract_vitals_from_chartevents(hadm_ids: Optional[set] = None) -> pl.DataFr
             v = v.filter(pl.col("hadm_id").is_in(list(hadm_filter)))
         return v
 
-    chartevents_path = f"{MIMIC_DATA_DIR}/chartevents.csv.gz"
+    chartevents_path = f"{MIMIC_DATA_DIR}/icu/chartevents.csv.gz"
     if not Path(chartevents_path).exists():
         return pl.DataFrame(
             schema={

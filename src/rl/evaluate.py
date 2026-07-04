@@ -17,7 +17,7 @@ import os
 DATA_DIR = Path(os.environ.get("RL_DATA_DIR", Path(__file__).resolve().parent.parent.parent / "data"))
 DS_DIR = DATA_DIR / "dataset_v1"
 MODEL_DIR = DATA_DIR / "models"
-MIMIC_DIR = Path(os.environ.get("MIMIC_DATA_DIR", "/Users/farasatdhedhi/mimic_pipeline/data"))
+MIMIC_DIR = Path(os.environ.get("MIMIC_DATA_DIR", "/Users/farasatdhedhi/mimic_pipeline/mimiciv_3.1"))
 
 
 def _get_state_dim() -> int:
@@ -269,7 +269,7 @@ def _load_malignancy_hadm() -> set:
     if not s1:
         return set()
     malignancy_icd10_prefixes = s1[0].get("icd_prefix", [])
-    diag_path = MIMIC_DIR / "diagnoses.csv"
+    diag_path = MIMIC_DIR / "hosp" / "diagnoses_icd.csv.gz"
     if not diag_path.exists():
         return set()
     diag = pl.scan_csv(str(diag_path), infer_schema_length=10000).collect()
@@ -368,10 +368,10 @@ def phenotype_stratification(device: Optional[str] = None) -> Dict:
     test_ds = FlatDataset(str(DS_DIR / "test.parquet"))
     test_ds.to_device(dev)
     test = pl.read_parquet(str(DS_DIR / "test.parquet"))
-    diag_path = MIMIC_DIR / "diagnoses.csv"
+    diag_path = MIMIC_DIR / "hosp" / "diagnoses_icd.csv.gz"
 
     if not diag_path.exists():
-        return {"error": "diagnoses.csv not found"}
+        return {"error": "diagnoses_icd.csv.gz not found"}
 
     diag = pl.scan_csv(str(diag_path), infer_schema_length=10000).filter(pl.col("seq_num") == 1).collect()
     primary = diag.select(["hadm_id", "icd_code", "icd_version"]).unique(subset=["hadm_id"])

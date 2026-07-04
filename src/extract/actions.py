@@ -6,7 +6,7 @@ from src.config import MIMIC_DATA_DIR, BIN_HOURS, ACTION_BUNDLES, PRECEDENCE
 
 
 def extract_actions_from_prescriptions(hadm_ids: Optional[set] = None) -> pl.DataFrame:
-    scan = pl.scan_csv(f"{MIMIC_DATA_DIR}/prescriptions.csv.gz", try_parse_dates=True)
+    scan = pl.scan_csv(f"{MIMIC_DATA_DIR}/hosp/prescriptions.csv.gz", try_parse_dates=True)
     if hadm_ids is not None:
         hadm_str = [str(h) for h in hadm_ids]
         scan = scan.filter(pl.col("hadm_id").cast(pl.Utf8).is_in(hadm_str))

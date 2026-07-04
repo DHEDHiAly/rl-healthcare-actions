@@ -5,12 +5,12 @@ from src.config import MIMIC_DATA_DIR, COHORT_MODE
 
 
 def extract_cohort() -> pl.DataFrame:
-    adm = pl.read_csv(f"{MIMIC_DATA_DIR}/admissions.csv", try_parse_dates=True)
-    pat = pl.read_csv(f"{MIMIC_DATA_DIR}/patients.csv")
+    adm = pl.read_csv(f"{MIMIC_DATA_DIR}/hosp/admissions.csv.gz", try_parse_dates=True)
+    pat = pl.read_csv(f"{MIMIC_DATA_DIR}/hosp/patients.csv.gz")
 
     if COHORT_MODE == "all_hosp":
         # All admissions with any data — ICU + hospital floor
-        labev = pl.scan_csv(f"{MIMIC_DATA_DIR}/labevents.csv.gz", try_parse_dates=True)
+        labev = pl.scan_csv(f"{MIMIC_DATA_DIR}/hosp/labevents.csv.gz", try_parse_dates=True)
         lab_with_hadm = (
             labev.filter(pl.col("valuenum").is_not_null() & pl.col("hadm_id").is_not_null())
             .select(pl.col("hadm_id").cast(pl.Int64))
@@ -37,7 +37,7 @@ def extract_cohort() -> pl.DataFrame:
         # Also include admissions with prescriptions (floor meds)
         from pathlib import Path
 
-        rx_path = f"{MIMIC_DATA_DIR}/prescriptions.csv.gz"
+        rx_path = f"{MIMIC_DATA_DIR}/hosp/prescriptions.csv.gz"
         if Path(rx_path).exists():
             rx = (
                 pl.scan_csv(rx_path)
@@ -56,7 +56,7 @@ def extract_cohort() -> pl.DataFrame:
         else:
             cohort_ids = adm_with_labs.select("hadm_id").unique()
     elif COHORT_MODE == "all_icu":
-        labev = pl.scan_csv(f"{MIMIC_DATA_DIR}/labevents.csv.gz", try_parse_dates=True)
+        labev = pl.scan_csv(f"{MIMIC_DATA_DIR}/hosp/labevents.csv.gz", try_parse_dates=True)
         cohort_ids = (
             labev.filter(pl.col("valuenum").is_not_null() & pl.col("hadm_id").is_not_null())
             .select(pl.col("hadm_id").cast(pl.Int64))
