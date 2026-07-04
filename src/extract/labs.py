@@ -5,6 +5,7 @@ subject_id + charttime to admission time windows.
 """
 
 import csv
+from datetime import datetime
 from typing import Optional
 import polars as pl
 from src.config import MIMIC_DATA_DIR, BIN_HOURS, LAB_FEATURES, VITAL_FEATURES
