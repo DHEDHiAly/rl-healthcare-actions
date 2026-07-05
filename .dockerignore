@@ -1,0 +1,12 @@
+.git/
+__pycache__/
+*.py[cod]
+*.parquet
+*.csv
+*.log
+data/models/*.pt
+data/dataset_v1/
+tests/
+.venv/
+venv/
+.DS_Store
