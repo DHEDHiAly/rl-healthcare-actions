@@ -6,4 +6,4 @@
 | 1.x     | Yes       |
 
 ## Reporting
-Report vulnerabilities to farasatdhedhi@gmail.com. You'll receive a response within 48h.
+Report vulnerabilities to alydhedhi@gmail.com. You'll receive a response within 48h.
