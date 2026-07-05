@@ -1,0 +1,226 @@
+{
+  "ope": {
+    "iql": {
+      "wis": -15.089331250261923,
+      "fqe": -1.2198945977687836,
+      "pv": -0.26911644936607,
+      "dm": 0.25486102269549155
+    },
+    "bc": {
+      "wis": -92.1138279256854,
+      "fqe": -1.2198945977687836,
+      "pv": -0.16654264523614742,
+      "dm": 0.2052711940502777
+    },
+    "behavior": {
+      "fqe": -1.2198945977687836
+    }
+  },
+  "efficacy": {
+    "iql": {
+      "mean": -0.3439990095637271,
+      "ci_lower": -0.571111661796965,
+      "ci_upper": -0.12701069216732147,
+      "n_resamples": 1000
+    },
+    "behavior": {
+      "mean": -1.3224330287456512,
+      "ci_lower": -1.6919174427413939,
+      "ci_upper": -0.9635041514086724,
+      "n_resamples": 1000
+    },
+    "overlaps": false,
+    "iql_mean_higher": true
+  },
+  "phenotype": {
+    "groups_checked": 50,
+    "top_groups": [
+      {
+        "icd_group": "A41",
+        "n_episodes": 1015,
+        "behavior_mean": -11.7187,
+        "iql_mean": -6.0028,
+        "iql_better": true
+      },
+      {
+        "icd_group": "038",
+        "n_episodes": 714,
+        "behavior_mean": -9.9374,
+        "iql_mean": -5.1184,
+        "iql_better": true
+      },
+      {
+        "icd_group": "I21",
+        "n_episodes": 476,
+        "behavior_mean": -4.2773,
+        "iql_mean": -1.7397,
+        "iql_better": true
+      },
+      {
+        "icd_group": "I13",
+        "n_episodes": 453,
+        "behavior_mean": -4.9391,
+        "iql_mean": -2.6864,
+        "iql_better": true
+      },
+      {
+        "icd_group": "428",
+        "n_episodes": 545,
+        "behavior_mean": -1.1133,
+        "iql_mean": -0.3224,
+        "iql_better": true
+      },
+      {
+        "icd_group": "I63",
+        "n_episodes": 331,
+        "behavior_mean": -1.4942,
+        "iql_mean": -0.7029,
+        "iql_better": true
+      },
+      {
+        "icd_group": "I25",
+        "n_episodes": 394,
+        "behavior_mean": 0.085,
+        "iql_mean": 0.1921,
+        "iql_better": true
+      },
+      {
+        "icd_group": "410",
+        "n_episodes": 370,
+        "behavior_mean": -0.9336,
+        "iql_mean": -0.1822,
+        "iql_better": true
+      },
+      {
+        "icd_group": "I61",
+        "n_episodes": 163,
+        "behavior_mean": -8.5666,
+        "iql_mean": -5.6513,
+        "iql_better": true
+      },
+      {
+        "icd_group": "S06",
+        "n_episodes": 221,
+        "behavior_mean": -3.8691,
+        "iql_mean": -2.3784,
+        "iql_better": true
+      }
+    ],
+    "failing_groups": [
+      {
+        "icd_group": "414",
+        "n_episodes": 383,
+        "behavior_mean": 0.9673,
+        "iql_mean": 0.7213,
+        "iql_better": false
+      },
+      {
+        "icd_group": "427",
+        "n_episodes": 268,
+        "behavior_mean": 1.2479,
+        "iql_mean": 0.9606,
+        "iql_better": false
+      },
+      {
+        "icd_group": "250",
+        "n_episodes": 300,
+        "behavior_mean": 2.9125,
+        "iql_mean": 2.0888,
+        "iql_better": false
+      },
+      {
+        "icd_group": "440",
+        "n_episodes": 166,
+        "behavior_mean": 1.5847,
+        "iql_mean": 1.3422,
+        "iql_better": false
+      },
+      {
+        "icd_group": "V58",
+        "n_episodes": 210,
+        "behavior_mean": 4.0954,
+        "iql_mean": 3.3971,
+        "iql_better": false
+      },
+      {
+        "icd_group": "562",
+        "n_episodes": 120,
+        "behavior_mean": 1.9438,
+        "iql_mean": 1.5682,
+        "iql_better": false
+      }
+    ]
+  },
+  "safety": {
+    "n_violations": 0,
+    "violations": [],
+    "constraints_checked": [
+      "S1",
+      "S2",
+      "S3",
+      "S4",
+      "S5",
+      "S6",
+      "S7"
+    ],
+    "pre_mask_violations": {},
+    "post_mask_violations": 0
+  },
+  "plausibility": {
+    "trajectories": [
+      {
+        "rank": 1,
+        "hadm_id": 20690983,
+        "return": 10.18,
+        "length": "6",
+        "top_policy_actions": [
+          "no_intervention"
+        ]
+      },
+      {
+        "rank": 2,
+        "hadm_id": 21088435,
+        "return": 10.18,
+        "length": "6",
+        "top_policy_actions": [
+          "no_intervention",
+          "fluid_resuscitation"
+        ]
+      },
+      {
+        "rank": 3,
+        "hadm_id": 23548300,
+        "return": 10.16,
+        "length": "6",
+        "top_policy_actions": [
+          "no_intervention"
+        ]
+      },
+      {
+        "rank": 4,
+        "hadm_id": 23783700,
+        "return": 10.14,
+        "length": "6",
+        "top_policy_actions": [
+          "no_intervention"
+        ]
+      },
+      {
+        "rank": 5,
+        "hadm_id": 28217007,
+        "return": 10.07,
+        "length": "7",
+        "top_policy_actions": [
+          "no_intervention"
+        ]
+      }
+    ]
+  },
+  "bootstrap_ci": {
+    "mean": -0.2854417416359264,
+    "ci_lower": -0.5877493348565327,
+    "ci_upper": 0.00041378165543960374,
+    "n_resamples": 1000
+  },
+  "n_actions": 16
+}
