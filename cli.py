@@ -47,6 +47,14 @@ def main():
     p_train.add_argument("--hidden-sizes", type=int, nargs="+", default=None,
                         help="Custom hidden layer sizes (overrides --arch)")
 
+    p_interpret = sub.add_parser("interpret", help="Per-patient clinical interpretation")
+    p_interpret.add_argument("--hadm", type=int, required=True, help="Patient admission ID")
+    p_interpret.add_argument("--max-bins", type=int, default=24, help="Max bins to show")
+    p_interpret.add_argument("--output", default=None, help="Save report to file")
+
+    p_compare = sub.add_parser("compare", help="Compare young vs old patients with matching labs")
+    p_compare.add_argument("--max-pairs", type=int, default=5)
+
     p_eval = sub.add_parser("eval", help="Run evaluation suite")
     p_eval.add_argument("--subtask", choices=["all", "ope", "safety", "phenotype", "plausibility", "bootstrap"],
                         default="all")
@@ -164,6 +172,20 @@ def main():
                 torch.save(bc["model"].net.state_dict(), out / f"bc_seed{seed}.pt")
                 save_history(bc["history"], str(out / f"bc_history_seed{seed}.json"))
                 print(f"  Final val loss: {bc['history']['val'][-1]}")
+    elif args.command == "interpret":
+        from src.rl.interpret import interpret_patient, format_report
+        result = interpret_patient(args.hadm)
+        if "error" in result:
+            print(f"Error: {result['error']}")
+        else:
+            report = format_report(result, max_bins=args.max_bins)
+            print(report)
+            if args.output:
+                Path(args.output).write_text(report)
+                print(f"Saved to {args.output}")
+    elif args.command == "compare":
+        from src.rl.per_patient import compare_scenarios
+        compare_scenarios(device=args.device)
     elif args.command == "eval":
         from src.rl.evaluate import evaluate_all
         evaluate_all(device=args.device)

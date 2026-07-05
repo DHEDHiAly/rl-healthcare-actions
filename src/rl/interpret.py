@@ -58,7 +58,9 @@ def compute_action_attribution(state, action, q_net, device="mps"):
     q = q_net(s)
     qa = q[0, action]
     qa.backward()
-    attr = s.grad.squeeze().cpu().numpy()
+    grad = s.grad.squeeze().detach()
+    x = s.squeeze().detach()
+    attr = (grad * x).cpu().numpy()
     return attr
 
 
@@ -87,7 +89,7 @@ def interpret_patient(hadm_id, device="mps"):
     bins = []
     for bin_idx in range(adm.height):
         row = adm.row(bin_idx, named=True)
-        state = np.array([row[c] for c in state_cols], dtype=np.float32)
+        state = np.array([row[c] if row[c] is not None else 0.0 for c in state_cols], dtype=np.float32)
         state_t = torch.FloatTensor(state).unsqueeze(0).to(device)
 
         # Ensemble prediction
@@ -107,8 +109,9 @@ def interpret_patient(hadm_id, device="mps"):
         # Feature attribution (why this action?)
         attr = compute_action_attribution(state, best_action, ensemble.q_nets[0], device)
 
-        # Top contributing features
+        # Top contributing features (Gradient x Input = contribution in Q-value units)
         feat_contrib = [(feat_names[i], float(attr[i])) for i in range(len(attr))]
+        feat_contrib = [(n, v) for n, v in feat_contrib if abs(v) > 1e-4]
         feat_contrib.sort(key=lambda x: abs(x[1]), reverse=True)
 
         # Abnormal labs

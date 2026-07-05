@@ -83,7 +83,8 @@ class IQL:
         expectile: float = 0.7,
         temperature: float = 0.1,
         dropout: float = 0.2,
-        gamma: float = 0.99,
+        gamma: float = 0.95,
+        cql_alpha: float = 0.5,
         device: str = "cpu",
         arch: str = "mlp",
         hidden_sizes: Optional[List[int]] = None,
@@ -108,6 +109,7 @@ class IQL:
         self.expectile = expectile
         self.temperature = temperature
         self.gamma = gamma
+        self.cql_alpha = cql_alpha
         self.n_actions = n_actions
 
     def _expectile_loss(self, pred: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
@@ -126,6 +128,9 @@ class IQL:
         q = self.q_net(s)
         q_a = q.gather(1, a.unsqueeze(1))
         q_loss = F.mse_loss(q_a, v_target)
+        # CQL: push down Q-values for all actions, push up for taken actions
+        cql_penalty = self.cql_alpha * (q.logsumexp(dim=1).mean() - q_a.mean())
+        q_loss = q_loss + cql_penalty
 
         self.v_opt.zero_grad()
         v_loss.backward()

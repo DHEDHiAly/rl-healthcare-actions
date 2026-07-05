@@ -89,8 +89,9 @@ def compute_lab_deviation(df: pl.DataFrame) -> pl.DataFrame:
 
     df = df.with_columns(dev_cols)
     dev_names = [c for c in df.columns if c.startswith("_dev_")]
-    capped = sum(pl.col(c).clip(0, 10) for c in dev_names)
-    df = df.with_columns(capped.alias("lab_deviation"))
+    n_feats = max(len(dev_names), 1)
+    mean_dev = sum(pl.col(c).clip(0, 10) for c in dev_names) / n_feats
+    df = df.with_columns(mean_dev.alias("lab_deviation"))
     return df.drop(dev_names)
 
 
